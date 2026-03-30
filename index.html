@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>French A2 — Daily Planner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f7f5f0;
+    --surface: #ffffff;
+    --surface2: #f0ede6;
+    --border: rgba(0,0,0,0.1);
+    --border2: rgba(0,0,0,0.18);
+    --text: #1a1916;
+    --text2: #6b6860;
+    --text3: #a09e99;
+    --purple: #534AB7;
+    --purple-bg: #EEEDFE;
+    --purple-text: #3C3489;
+    --teal: #0F6E56;
+    --teal-bg: #E1F5EE;
+    --teal-text: #085041;
+    --amber: #854F0B;
+    --amber-bg: #FAEEDA;
+    --amber-text: #633806;
+    --coral: #993C1D;
+    --coral-bg: #FAECE7;
+    --coral-text: #712B13;
+    --blue: #185FA5;
+    --blue-bg: #E6F1FB;
+    --blue-text: #0C447C;
+    --green: #3B6D11;
+    --green-bg: #EAF3DE;
+    --green-dark: #27500A;
+    --radius: 10px;
+    --radius-lg: 14px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #16150f;
+      --surface: #1e1d17;
+      --surface2: #252420;
+      --border: rgba(255,255,255,0.09);
+      --border2: rgba(255,255,255,0.15);
+      --text: #e8e5dc;
+      --text2: #8a8880;
+      --text3: #5a5855;
+      --purple-bg: #26215C;
+      --purple-text: #CECBF6;
+      --teal-bg: #04342C;
+      --teal-text: #9FE1CB;
+      --amber-bg: #412402;
+      --amber-text: #FAC775;
+      --coral-bg: #4A1B0C;
+      --coral-text: #F5C4B3;
+      --blue-bg: #042C53;
+      --blue-text: #B5D4F4;
+      --green-bg: #173404;
+      --green-dark: #C0DD97;
+    }
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { font-size: 16px; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* ── Header ── */
+  header {
+    background: var(--surface);
+    border-bottom: 0.5px solid var(--border);
+    padding: 20px 28px 16px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .header-left h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 26px;
+    font-weight: 400;
+    letter-spacing: -0.3px;
+    color: var(--text);
+    line-height: 1.1;
+  }
+
+  .header-left p {
+    font-size: 12px;
+    color: var(--text3);
+    margin-top: 3px;
+    font-weight: 300;
+    letter-spacing: 0.02em;
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .week-nav {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--surface2);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 4px;
+  }
+
+  .nav-btn {
+    background: none;
+    border: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 7px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text2);
+    font-size: 15px;
+    transition: background .15s, color .15s;
+  }
+
+  .nav-btn:hover { background: var(--border); color: var(--text); }
+
+  .week-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    min-width: 68px;
+    text-align: center;
+  }
+
+  .reset-btn {
+    font-size: 11px;
+    color: var(--text3);
+    background: none;
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: color .15s, border-color .15s;
+  }
+
+  .reset-btn:hover { color: var(--text2); border-color: var(--border2); }
+
+  /* ── Main layout ── */
+  .main {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 24px 20px 60px;
+  }
+
+  /* ── Stage banner ── */
+  .stage-banner {
+    border-radius: var(--radius-lg);
+    padding: 14px 18px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    border: 0.5px solid transparent;
+  }
+
+  .stage-name {
+    font-family: 'DM Serif Display', serif;
+    font-size: 17px;
+    font-weight: 400;
+  }
+
+  .stage-progress-text {
+    font-size: 11px;
+    font-weight: 500;
+    opacity: 0.75;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  /* ── Stats ── */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    margin-bottom: 22px;
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 14px 16px;
+    box-shadow: var(--shadow);
+  }
+
+  .stat-label {
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text3);
+    margin-bottom: 6px;
+  }
+
+  .stat-val {
+    font-size: 22px;
+    font-weight: 300;
+    color: var(--text);
+    line-height: 1;
+    margin-bottom: 8px;
+    font-family: 'DM Serif Display', serif;
+  }
+
+  .prog-track {
+    height: 3px;
+    background: var(--surface2);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+
+  .prog-fill {
+    height: 100%;
+    border-radius: 99px;
+    transition: width .4s ease;
+  }
+
+  .stat-sub {
+    font-size: 10px;
+    color: var(--text3);
+    margin-top: 5px;
+  }
+
+  /* ── Stage pills ── */
+  .stage-pills {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+
+  .s-pill {
+    font-size: 10px;
+    font-weight: 500;
+    padding: 4px 10px;
+    border-radius: 99px;
+    border: 0.5px solid transparent;
+    cursor: pointer;
+    letter-spacing: 0.02em;
+    transition: opacity .2s;
+  }
+
+  .s-pill.active { opacity: 1; }
+  .s-pill:not(.active) { opacity: 0.38; }
+
+  /* ── Day cards ── */
+  .days-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .day-card {
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    transition: border-color .2s;
+  }
+
+  .day-card.is-today {
+    border-color: rgba(83,74,183,0.4);
+    box-shadow: 0 0 0 3px rgba(83,74,183,0.07);
+  }
+
+  .day-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 13px 16px;
+    cursor: pointer;
+    user-select: none;
+    transition: background .12s;
+  }
+
+  .day-header:hover { background: var(--surface2); }
+
+  .day-name-col {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    width: 108px;
+    flex-shrink: 0;
+  }
+
+  .day-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .today-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--purple);
+    flex-shrink: 0;
+  }
+
+  .day-topic {
+    font-size: 12px;
+    color: var(--text2);
+    flex: 1;
+    font-weight: 300;
+    line-height: 1.4;
+  }
+
+  .day-checks {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  .check-group {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .chk-lbl {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    color: var(--text3);
+  }
+
+  .chk {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 0.5px solid var(--border2);
+    background: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background .15s, border-color .15s;
+    flex-shrink: 0;
+  }
+
+  .chk:hover { background: var(--surface2); }
+
+  .chk.gram-done {
+    background: var(--green-bg);
+    border-color: var(--green);
+  }
+
+  .chk.vocab-done {
+    background: var(--purple-bg);
+    border-color: var(--purple);
+  }
+
+  .chk svg { opacity: 0; transition: opacity .15s; }
+  .chk.gram-done svg, .chk.vocab-done svg { opacity: 1; }
+
+  .chevron {
+    font-size: 11px;
+    color: var(--text3);
+    transition: transform .2s;
+    flex-shrink: 0;
+  }
+
+  .chevron.open { transform: rotate(90deg); }
+
+  /* ── Day body ── */
+  .day-body {
+    display: none;
+    border-top: 0.5px solid var(--border);
+  }
+
+  .day-body.open { display: block; }
+
+  .session-table {
+    padding: 14px 16px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+  }
+
+  .session-row {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .time-badge {
+    font-size: 10px;
+    font-weight: 500;
+    background: var(--surface2);
+    color: var(--text3);
+    border-radius: 99px;
+    padding: 2px 8px;
+    flex-shrink: 0;
+    margin-top: 2px;
+    white-space: nowrap;
+    letter-spacing: 0.02em;
+  }
+
+  .session-text {
+    font-size: 12px;
+    color: var(--text2);
+    line-height: 1.65;
+    font-weight: 300;
+  }
+
+  .day-footer {
+    padding: 10px 16px 14px;
+    border-top: 0.5px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .vocab-lbl {
+    font-size: 11px;
+    color: var(--text2);
+    flex-shrink: 0;
+  }
+
+  .vocab-input {
+    width: 56px;
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    background: var(--surface2);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 5px 8px;
+    color: var(--text);
+    text-align: center;
+    outline: none;
+    transition: border-color .15s;
+  }
+
+  .vocab-input:focus { border-color: var(--border2); }
+
+  .vocab-hint {
+    font-size: 10px;
+    color: var(--text3);
+    font-weight: 300;
+  }
+
+  /* ── Overall progress bar ── */
+  .overall-bar {
+    margin-bottom: 22px;
+  }
+
+  .overall-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 6px;
+  }
+
+  .overall-labels span {
+    font-size: 11px;
+    color: var(--text3);
+    font-weight: 400;
+    letter-spacing: 0.03em;
+  }
+
+  .overall-track {
+    height: 5px;
+    background: var(--surface2);
+    border-radius: 99px;
+    overflow: hidden;
+    border: 0.5px solid var(--border);
+  }
+
+  .overall-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--purple) 0%, #7F77DD 100%);
+    border-radius: 99px;
+    transition: width .5s ease;
+  }
+
+  /* ── Footer ── */
+  footer {
+    text-align: center;
+    font-size: 11px;
+    color: var(--text3);
+    padding: 20px;
+    border-top: 0.5px solid var(--border);
+    font-weight: 300;
+    letter-spacing: 0.02em;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 520px) {
+    header { padding: 16px; }
+    .main { padding: 16px 12px 50px; }
+    .stats-row { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; }
+    .stat-card { padding: 10px 11px; }
+    .stat-val { font-size: 18px; }
+    .day-name-col { width: 84px; }
+    .day-header { padding: 11px 12px; gap: 8px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <h1>French A2 Planner</h1>
+    <p>6 days · 1 hour · 5 stages · 30 weeks</p>
+  </div>
+  <div class="header-right">
+    <div class="week-nav">
+      <button class="nav-btn" onclick="changeWeek(-1)" title="Previous week">&#8249;</button>
+      <span class="week-label" id="week-label">Week 1</span>
+      <button class="nav-btn" onclick="changeWeek(1)" title="Next week">&#8250;</button>
+    </div>
+    <button class="reset-btn" onclick="resetWeek()">reset week</button>
+  </div>
+</header>
+
+<div class="main">
+
+  <div class="overall-bar">
+    <div class="overall-labels">
+      <span id="overall-label">Overall progress</span>
+      <span id="overall-pct">0%</span>
+    </div>
+    <div class="overall-track">
+      <div class="overall-fill" id="overall-fill" style="width:0%"></div>
+    </div>
+  </div>
+
+  <div id="stage-banner" class="stage-banner"></div>
+
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-label">Days done</div>
+      <div class="stat-val" id="stat-days">0</div>
+      <div class="prog-track"><div class="prog-fill" id="prog-days" style="width:0%;background:#639922"></div></div>
+      <div class="stat-sub">of 6 this week</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Grammar topics</div>
+      <div class="stat-val" id="stat-gram">0</div>
+      <div class="prog-track"><div class="prog-fill" id="prog-gram" style="width:0%;background:var(--purple)"></div></div>
+      <div class="stat-sub">of 6 this week</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Vocab words</div>
+      <div class="stat-val" id="stat-vocab">0</div>
+      <div class="prog-track"><div class="prog-fill" id="prog-vocab" style="width:0%;background:#BA7517"></div></div>
+      <div class="stat-sub">goal: 90 / week</div>
+    </div>
+  </div>
+
+  <div class="stage-pills" id="stage-pills"></div>
+  <div class="days-list" id="days-list"></div>
+
+</div>
+
+<footer>
+  Progress saved locally in your browser &nbsp;·&nbsp; French A2 — 30-week intensive
+</footer>
+
+<script>
+const STAGES = [
+  { label: "Stage 1 · Foundations", colors: { pill: "#534AB7", pillBg: "#EEEDFE", pillText: "#3C3489", bannerBg: "#EEEDFE", bannerText: "#26215C", bannerBorder: "#AFA9EC" }, topics: [
+    "Present tense — regular -er verbs",
+    "Present tense — regular -ir & -re verbs",
+    "Irregular verbs: être & avoir",
+    "Irregular verbs: aller, faire, vouloir, pouvoir",
+    "Definite & indefinite articles + gender rules",
+    "Basic negation: ne…pas — review & consolidation"
+  ]},
+  { label: "Stage 2 · Questions & Pronouns", colors: { pill: "#0F6E56", pillBg: "#E1F5EE", pillText: "#085041", bannerBg: "#E1F5EE", bannerText: "#04342C", bannerBorder: "#5DCAA5" }, topics: [
+    "Est-ce que & inversion question forms",
+    "Question words: où, quand, comment, pourquoi, qui",
+    "Direct object pronouns: le, la, les",
+    "Indirect object pronouns: lui, leur",
+    "Possessive adjectives: mon, ma, mes / ton, ta…",
+    "Demonstrative adjectives (ce, cet, cette, ces) + review"
+  ]},
+  { label: "Stage 3 · Past Tenses", colors: { pill: "#854F0B", pillBg: "#FAEEDA", pillText: "#633806", bannerBg: "#FAEEDA", bannerText: "#412402", bannerBorder: "#EF9F27" }, topics: [
+    "Passé composé with avoir — regular verbs",
+    "Passé composé with être — motion & reflexive verbs",
+    "Past participle agreement rules",
+    "L'imparfait — formation (all groups)",
+    "L'imparfait — usage: descriptions & habitual past",
+    "PC vs imparfait contrast — review & mixed practice"
+  ]},
+  { label: "Stage 4 · Future & Commands", colors: { pill: "#993C1D", pillBg: "#FAECE7", pillText: "#712B13", bannerBg: "#FAECE7", bannerText: "#4A1B0C", bannerBorder: "#F0997B" }, topics: [
+    "Futur proche: aller + infinitif",
+    "Futur simple — regular formation",
+    "Futur simple — irregular stems (être, avoir, aller…)",
+    "Imperative mood: tu, vous, nous forms",
+    "Si + présent → futur simple (condition clauses)",
+    "Mixed tenses review — past, present, future"
+  ]},
+  { label: "Stage 5 · Refinement", colors: { pill: "#185FA5", pillBg: "#E6F1FB", pillText: "#0C447C", bannerBg: "#E6F1FB", bannerText: "#042C53", bannerBorder: "#85B7EB" }, topics: [
+    "Adverbial pronoun: y (location & à + noun)",
+    "Adverbial pronoun: en (quantity & de + noun)",
+    "Extended negation: jamais, plus, rien, personne, que",
+    "Relative pronouns: qui & que",
+    "Pronominal (reflexive) verbs — present & past",
+    "Comparatives, superlatives + full A2 review"
+  ]}
+];
+
+const DAYS = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+
+const SESSION_BLOCKS = [
+  { time: "0 – 10 min",  text: "Warm-up: recall yesterday's grammar rule from memory. Write 2 sentences without looking at notes." },
+  { time: "10 – 35 min", text: "New grammar focus: study the rule, work 10–15 exercises on Kwiziq or Lingolia. Note every mistake." },
+  { time: "35 – 50 min", text: "Vocab: Anki deck, 10–15 new words in sentence context. Mark words you hesitated on for review tomorrow." },
+  { time: "50 – 60 min", text: "Production: write 5 original sentences using today's grammar + at least 3 new vocab words together." }
+];
+
+let currentWeek = 0;
+
+function key(w, d, type) { return `fra2_w${w}_d${d}_${type}`; }
+function load(w, d, type) { try { const v = localStorage.getItem(key(w,d,type)); return v === null ? null : JSON.parse(v); } catch(e) { return null; } }
+function save(w, d, type, val) { try { localStorage.setItem(key(w,d,type), JSON.stringify(val)); } catch(e) {} }
+
+function stageInfo(w) {
+  const si = Math.min(Math.floor(w / 6), 4);
+  const wi = w % 6;
+  return { stage: STAGES[si], stageIdx: si, weekInStage: wi };
+}
+
+function render() {
+  const w = currentWeek;
+  const { stage, stageIdx, weekInStage } = stageInfo(w);
+  const c = stage.colors;
+
+  document.getElementById('week-label').textContent = `Week ${w + 1}`;
+
+  // Overall progress
+  const totalDays = 30 * 6;
+  const doneDays = (() => {
+    let n = 0;
+    for (let ww = 0; ww < 30; ww++) {
+      for (let dd = 0; dd < 6; dd++) {
+        const g = load(ww, dd, 'gram') === true;
+        const v = (load(ww, dd, 'vocab') || 0) >= 10;
+        if (g && v) n++;
+      }
+    }
+    return n;
+  })();
+  const overallPct = Math.round(doneDays / totalDays * 100);
+  document.getElementById('overall-fill').style.width = overallPct + '%';
+  document.getElementById('overall-pct').textContent = overallPct + '%';
+  document.getElementById('overall-label').textContent = `Overall progress — Week ${w+1} of 30`;
+
+  // Stage banner
+  const banner = document.getElementById('stage-banner');
+  banner.style.background = c.bannerBg;
+  banner.style.borderColor = c.bannerBorder;
+  banner.innerHTML = `
+    <span class="stage-name" style="color:${c.bannerText}">${stage.label}</span>
+    <span class="stage-progress-text" style="color:${c.bannerText}">Week ${weekInStage + 1} of 6</span>
+  `;
+
+  // Stage pills
+  const pills = document.getElementById('stage-pills');
+  pills.innerHTML = STAGES.map((s, i) => {
+    const active = i === stageIdx;
+    return `<span class="s-pill ${active ? 'active' : ''}" style="background:${s.colors.pillBg};color:${s.colors.pillText};border-color:${active ? s.colors.pill : 'transparent'}">${s.label}</span>`;
+  }).join('');
+
+  // Today detection
+  const jsDay = new Date().getDay();
+  const todayIdx = jsDay === 0 ? 6 : jsDay - 1;
+
+  let gramDone = 0, vocabTotal = 0, daysDone = 0;
+
+  const list = document.getElementById('days-list');
+  list.innerHTML = '';
+
+  DAYS.forEach((name, i) => {
+    const topicIdx = (weekInStage * 6 + i) % stage.topics.length;
+    const topic = stage.topics[topicIdx];
+    const isToday = i === todayIdx;
+    const gramChecked = load(w, i, 'gram') === true;
+    const vocabCount = load(w, i, 'vocab') || 0;
+    const dayComplete = gramChecked && vocabCount >= 10;
+
+    if (gramChecked) gramDone++;
+    vocabTotal += vocabCount;
+    if (dayComplete) daysDone++;
+
+    const card = document.createElement('div');
+    card.className = `day-card${isToday ? ' is-today' : ''}`;
+    card.id = `card-${i}`;
+
+    card.innerHTML = `
+      <div class="day-header" onclick="toggleBody(${i})">
+        <div class="day-name-col">
+          <span class="day-name">${name}</span>
+          ${isToday ? '<span class="today-dot"></span>' : ''}
+        </div>
+        <span class="day-topic">${topic}</span>
+        <div class="day-checks">
+          <div class="check-group">
+            <span class="chk-lbl">G</span>
+            <div class="chk ${gramChecked ? 'gram-done' : ''}" id="chk-g-${i}" onclick="event.stopPropagation();toggleGram(${i})" title="Mark grammar done">
+              <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M2 5.5l2.8 2.8L9 3" stroke="#27500A" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+          </div>
+          <div class="check-group">
+            <span class="chk-lbl">V</span>
+            <div class="chk ${vocabCount >= 10 ? 'vocab-done' : ''}" id="chk-v-${i}" title="10+ vocab words logged">
+              <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M2 5.5l2.8 2.8L9 3" stroke="#3C3489" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+          </div>
+        </div>
+        <span class="chevron" id="chev-${i}">&#9656;</span>
+      </div>
+      <div class="day-body${isToday ? ' open' : ''}" id="body-${i}">
+        <div class="session-table">
+          ${SESSION_BLOCKS.map(s => `
+            <div class="session-row">
+              <span class="time-badge">${s.time}</span>
+              <span class="session-text">${s.text}</span>
+            </div>
+          `).join('')}
+        </div>
+        <div class="day-footer">
+          <span class="vocab-lbl">Vocab words logged today:</span>
+          <input class="vocab-input" type="number" id="vocab-${i}" min="0" max="30" step="1"
+            value="${vocabCount}"
+            oninput="saveVocab(${i}, this.value)"
+            onclick="event.stopPropagation()">
+          <span class="vocab-hint">10+ marks V complete</span>
+        </div>
+      </div>
+    `;
+
+    list.appendChild(card);
+
+    if (isToday) {
+      const chev = card.querySelector(`#chev-${i}`);
+      if (chev) chev.classList.add('open');
+    }
+  });
+
+  // Stats
+  document.getElementById('stat-days').textContent = daysDone;
+  document.getElementById('prog-days').style.width = Math.round(daysDone / 6 * 100) + '%';
+  document.getElementById('stat-gram').textContent = gramDone;
+  document.getElementById('prog-gram').style.width = Math.round(gramDone / 6 * 100) + '%';
+  document.getElementById('stat-vocab').textContent = vocabTotal;
+  document.getElementById('prog-vocab').style.width = Math.min(100, Math.round(vocabTotal / 90 * 100)) + '%';
+}
+
+function toggleBody(i) {
+  const body = document.getElementById(`body-${i}`);
+  const chev = document.getElementById(`chev-${i}`);
+  body.classList.toggle('open');
+  chev.classList.toggle('open');
+}
+
+function toggleGram(i) {
+  const cur = load(currentWeek, i, 'gram') === true;
+  save(currentWeek, i, 'gram', !cur);
+  const chk = document.getElementById(`chk-g-${i}`);
+  if (chk) chk.className = `chk ${!cur ? 'gram-done' : ''}`;
+  updateStats();
+}
+
+function saveVocab(i, val) {
+  const n = Math.max(0, Math.min(30, parseInt(val) || 0));
+  save(currentWeek, i, 'vocab', n);
+  const chk = document.getElementById(`chk-v-${i}`);
+  if (chk) {
+    chk.className = `chk ${n >= 10 ? 'vocab-done' : ''}`;
+  }
+  updateStats();
+}
+
+function updateStats() {
+  const w = currentWeek;
+  let gramDone = 0, vocabTotal = 0, daysDone = 0;
+  for (let i = 0; i < 6; i++) {
+    const g = load(w, i, 'gram') === true;
+    const v = load(w, i, 'vocab') || 0;
+    if (g) gramDone++;
+    vocabTotal += v;
+    if (g && v >= 10) daysDone++;
+  }
+  document.getElementById('stat-days').textContent = daysDone;
+  document.getElementById('prog-days').style.width = Math.round(daysDone / 6 * 100) + '%';
+  document.getElementById('stat-gram').textContent = gramDone;
+  document.getElementById('prog-gram').style.width = Math.round(gramDone / 6 * 100) + '%';
+  document.getElementById('stat-vocab').textContent = vocabTotal;
+  document.getElementById('prog-vocab').style.width = Math.min(100, Math.round(vocabTotal / 90 * 100)) + '%';
+
+  const totalDays = 30 * 6;
+  let totalDone = 0;
+  for (let ww = 0; ww < 30; ww++) {
+    for (let dd = 0; dd < 6; dd++) {
+      if (load(ww, dd, 'gram') === true && (load(ww, dd, 'vocab') || 0) >= 10) totalDone++;
+    }
+  }
+  const pct = Math.round(totalDone / totalDays * 100);
+  document.getElementById('overall-fill').style.width = pct + '%';
+  document.getElementById('overall-pct').textContent = pct + '%';
+}
+
+function changeWeek(dir) {
+  currentWeek = Math.max(0, Math.min(29, currentWeek + dir));
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function resetWeek() {
+  if (!confirm(`Reset all progress for Week ${currentWeek + 1}?`)) return;
+  for (let d = 0; d < 6; d++) {
+    try { localStorage.removeItem(key(currentWeek, d, 'gram')); } catch(e) {}
+    try { localStorage.removeItem(key(currentWeek, d, 'vocab')); } catch(e) {}
+  }
+  render();
+}
+
+render();
+</script>
+</body>
+</html>
