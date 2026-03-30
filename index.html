@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Language journey Planner - Dedicated to Ammu</title>
+<title>French Planner - Dedicated to Ammu</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
@@ -251,7 +251,7 @@
     display: flex;
     gap: 6px;
     flex-wrap: wrap;
-    margin-bottom: 20px;
+    margin-bottom: 8px;
   }
 
   .s-pill {
@@ -262,11 +262,106 @@
     border: 0.5px solid transparent;
     cursor: pointer;
     letter-spacing: 0.02em;
-    transition: opacity .2s;
+    transition: opacity .2s, transform .1s;
+    user-select: none;
   }
 
+  .s-pill:hover { transform: translateY(-1px); }
+  .s-pill:active { transform: translateY(0); }
   .s-pill.active { opacity: 1; }
   .s-pill:not(.active) { opacity: 0.38; }
+
+  /* ── Stage topic dropdown ── */
+  .stage-dropdown {
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-lg);
+    margin-bottom: 16px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+
+  .stage-dropdown-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+  }
+
+  .stage-dropdown-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 15px;
+    font-weight: 400;
+  }
+
+  .stage-dropdown-close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    color: var(--text3);
+    padding: 2px 6px;
+    border-radius: var(--radius);
+    transition: color .15s, background .15s;
+    line-height: 1;
+  }
+
+  .stage-dropdown-close:hover { color: var(--text2); background: var(--surface2); }
+
+  .stage-dropdown-body {
+    border-top: 0.5px solid var(--border);
+    padding: 4px 0;
+  }
+
+  .topic-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 16px;
+    border-bottom: 0.5px solid var(--border);
+  }
+
+  .topic-row:last-child { border-bottom: none; }
+
+  .topic-num {
+    font-size: 10px;
+    font-weight: 500;
+    width: 18px;
+    flex-shrink: 0;
+    letter-spacing: 0.04em;
+  }
+
+  .topic-week-badge {
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 99px;
+    flex-shrink: 0;
+    white-space: nowrap;
+    font-weight: 400;
+  }
+
+  .topic-text {
+    font-size: 12px;
+    color: var(--text2);
+    font-weight: 300;
+    flex: 1;
+  }
+
+  .topic-jump-btn {
+    font-size: 10px;
+    font-weight: 500;
+    padding: 3px 9px;
+    border-radius: 99px;
+    border: 0.5px solid var(--border2);
+    background: none;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background .15s;
+    color: var(--text2);
+    white-space: nowrap;
+  }
+
+  .topic-jump-btn:hover { background: var(--surface2); }
 
   /* ── Day cards ── */
   .days-list {
@@ -575,6 +670,7 @@
   </div>
 
   <div class="stage-pills" id="stage-pills"></div>
+  <div id="stage-dropdown"></div>
   <div class="days-list" id="days-list"></div>
 
 </div>
@@ -686,7 +782,7 @@ function render() {
   const pills = document.getElementById('stage-pills');
   pills.innerHTML = STAGES.map((s, i) => {
     const active = i === stageIdx;
-    return `<span class="s-pill ${active ? 'active' : ''}" style="background:${s.colors.pillBg};color:${s.colors.pillText};border-color:${active ? s.colors.pill : 'transparent'}">${s.label}</span>`;
+    return `<span class="s-pill ${active ? 'active' : ''}" style="background:${s.colors.pillBg};color:${s.colors.pillText};border-color:${active ? s.colors.pill : 'transparent'}" onclick="clickStagePill(${i})">${s.label}</span>`;
   }).join('');
 
   // Today detection
@@ -841,6 +937,60 @@ function resetWeek() {
     try { localStorage.removeItem(key(currentWeek, d, 'vocab')); } catch(e) {}
   }
   render();
+}
+
+let openDropdownStage = -1;
+
+function clickStagePill(si) {
+  const firstWeek = si * 6;
+  currentWeek = firstWeek;
+  if (openDropdownStage === si) {
+    closeStageDropdown();
+    render();
+  } else {
+    openDropdownStage = si;
+    render();
+    showStageDropdown(si);
+  }
+}
+
+function showStageDropdown(si) {
+  const s = STAGES[si];
+  const c = s.colors;
+  const container = document.getElementById('stage-dropdown');
+  const rows = s.topics.map((topic, i) => {
+    const targetWeek = si * 6 + Math.floor(i / 6);
+    const dayLabels = ['Mon','Tue','Wed','Thu','Fri','Sat'];
+    return `
+      <div class="topic-row">
+        <span class="topic-num" style="color:${c.pillText}">${i + 1}</span>
+        <span class="topic-week-badge" style="background:${c.pillBg};color:${c.pillText}">Wk ${si * 6 + 1} · ${dayLabels[i]}</span>
+        <span class="topic-text">${topic}</span>
+        <button class="topic-jump-btn" onclick="jumpToTopic(${si * 6})" style="color:${c.pillText};border-color:${c.pillBg}">go →</button>
+      </div>
+    `;
+  }).join('');
+  container.innerHTML = `
+    <div class="stage-dropdown">
+      <div class="stage-dropdown-header" style="background:${c.pillBg}">
+        <span class="stage-dropdown-title" style="color:${c.bannerText}">${s.label} — all 6 topics</span>
+        <button class="stage-dropdown-close" onclick="closeStageDropdown()" style="color:${c.pillText}">✕</button>
+      </div>
+      <div class="stage-dropdown-body">${rows}</div>
+    </div>
+  `;
+}
+
+function closeStageDropdown() {
+  openDropdownStage = -1;
+  document.getElementById('stage-dropdown').innerHTML = '';
+}
+
+function jumpToTopic(targetWeek) {
+  currentWeek = targetWeek;
+  closeStageDropdown();
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 render();
